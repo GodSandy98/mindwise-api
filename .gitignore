@@ -2,7 +2,6 @@
 __pycache__/
 *.pyc
 .env
-*.db
 venv/
 .venv/
 
@@ -10,3 +9,7 @@ venv/
 .idea/
 .vscode/
 .DS_Store
+
+# DB
+*.db
+*.sqbpro

@@ -1,0 +1,12 @@
+from sqlalchemy import Column, Integer, ForeignKey
+from app.core.database import Base
+
+
+class Answer(Base):
+    __tablename__ = "answers"
+
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
+    question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
+    answer = Column(Integer, nullable=False)
+    release = Column(Integer, nullable=False)  # 测评批次号
