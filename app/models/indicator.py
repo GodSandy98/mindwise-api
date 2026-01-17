@@ -7,4 +7,4 @@ class Indicator(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
-    system = Column(String(255))  # e.g., 'motivational', 'regulatory', 'executive'
+    system = Column(String(255))

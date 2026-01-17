@@ -8,5 +8,5 @@ class Answer(Base):
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
-    answer = Column(Integer, nullable=False)
-    release = Column(Integer, nullable=False)  # 测评批次号
+    answer = Column(Integer, nullable=True)
+    release = Column(Integer, nullable=False)

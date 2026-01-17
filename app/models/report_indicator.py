@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey
+from sqlalchemy import Column, Integer, Text, ForeignKey, Boolean
 from app.core.database import Base
 
 
@@ -10,3 +10,4 @@ class ReportIndicator(Base):
     indicator_id = Column(Integer, ForeignKey("indicators.id"), nullable=False)
     analysis = Column(Text)
     suggestion = Column(Text)
+    is_positive = Column(Boolean, nullable=True)
