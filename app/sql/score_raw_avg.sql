@@ -1,0 +1,17 @@
+SELECT
+    a.student_id AS student_id,
+    iq.indicator_id AS indicator_id,
+    AVG(
+        CASE
+            WHEN q.is_negative = 1 THEN (q.num_choices + 1 - a.answer)
+            ELSE a.answer
+        END
+    ) AS score_raw
+FROM answers a
+JOIN questions q
+    ON q.id = a.question_id
+JOIN indicator_question iq
+    ON iq.question_id = q.id
+WHERE a.release = :release
+  AND a.student_id IN :student_ids
+GROUP BY a.student_id, iq.indicator_id;
