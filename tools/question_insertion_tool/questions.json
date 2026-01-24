@@ -1,0 +1,469 @@
+{
+  "questions": [
+    {
+      "text": "在喧嚣的环境中，我很难集中精力去完成一项困难的任务。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "我很难集中注意力去解决一个问题。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "当我努力进行一项工作的时候，我仍会被周围发生的事情所干扰。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "即使房间里面有音乐声，我的注意力依然很好。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "当我专心致志的时候，我能很好地集中注意力，从而觉察不到周围发生的事情。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "在我学习的时候，如果房间中有人说话，我会很容易被干扰。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "当我想要集中注意力的时候，我很难摒除杂念。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "当我遇到让我兴奋的事情时，我很难集中注意力。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "当我集中注意力的时候，我会感觉不到饥饿与口渴。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我能很容易将注意力从一项任务中转移到另一项任务中。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我需要花上一定时间才能真正投入到新的任务当中。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "我在听讲座的时候，很难有效地在认真听讲和专心笔记之间进行协调。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "我可以很快对一个新的主题感兴趣。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我能轻松地一边打电话一边阅读或写东西。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我很难同时进行两个对话。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "我很难在较短的时间内提出一个新的想法。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "即使我被一些事情所打断，我也能很快将注意力集中到我之前所做的事情当中。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我能很快摒除我头脑中的一些杂念。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我能轻松地在两项困难的任务之间任意转换。",
+      "num_choices": 4,
+      "is_negative": false
+    },
+    {
+      "text": "我很难站在另一角度思考问题。",
+      "num_choices": 4,
+      "is_negative": true
+    },
+    {
+      "text": "我经常评价自己的学习效果，总结学习方法。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "教师讲评作业、测试卷时，我总是心不在焉地听。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我努力学习是因为各门功课的知识学习与今后的工作都密切相关。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "在上课过程中，我认真听讲、做笔记，同时用笔把课本中重要字句、公式及定理划上线。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我平时就很关注我的同学，以便从中找到能够给我帮忙的同学。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "在学习中我总是生搬硬套，很少积极思考。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我积极探索适合自己的学习方法。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我认为四处转悠是在浪费时间，课余时间我会学习大纲和辅导材料上提供的学习内容。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我借助联想、归纳把相关知识联系起来学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "对于基础较差的课程，我会花更多的时间去学习它，直到弄明白。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我喜欢相约三、五个固定的同学在一起有计划的学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我总是利用列提纲、画知识图表来理解所学的内容。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "课余时间，我喜欢在自己房间里安静的学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我想通过知识的学习，提高我的自信心。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我讨厌对自己进行一些小测验与考试。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "即使不喜欢老师布置的这个学习任务，我也会努力做到最好。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我经常制订各门课程的详细学习计划。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我讨厌与老师和其他同学交流学习体会、经验。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我会利用记忆规律提高记忆效果。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我善于创造、把握和利用各种学习的机会。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "对于各门课程，我都有明确的学习目标。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "在学习新知识时，我很少联想那些已经学过的知识。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我能够充分利用学习时间。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我能够通过努力学习各门功课，获得个人满足感。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我经常通过音像资料丰富自己的学习内容。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我很少使用工具书、参考资料。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我每一天都有一个学习任务的计划及时间分配表。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我经常利用推理、归纳等手段分析和解决学习问题。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "如果足够努力，我是能够理解所学功课的全部内容。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "课余时间，我喜欢和同学们一道在室外玩耍。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "课堂学习中，我喜欢充分利用小组讨论来学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "遇到新学习的内容时，我总会及时提醒自己注意那些已经学过的知识。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我会调整自己的学习心态，让自己始终处于良好的精神状态。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我注意发现学习内容之间的规律并运用规律举一反三来学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "当我碰到学习困难时，我不会放弃，会尽最大努力来克服困难。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我讨厌评价自己在学习中的进步与不足。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "对于作业、测试中的错误，过后我能意识到错误并进行适当的纠正。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "对于每次测试的结果，我总是归因于天分的高低。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "学习新授内容之前，我总是根据需要进行预习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "如果学习内容枯燥乏味，我不会认真的学习它。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我认为，学好各门功课与今后找工作密切相关。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "利用课余时间，我会重复抄写和背诵课本中的重要字句、公式及定理。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "整个学期，我都在努力学习。直到考试结束的时候，才放松了下来。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "在学习中我善于用图画、图表等非语言信息理解所学内容。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "学习新知识的时候，我经常会采用自问自答的形式，来帮助自己理解所学的知识。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我非常喜欢学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我认真学习是为了让父母高兴。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我讨厌学习。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "别人的赞扬会促进我的学习。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我觉得学习本身是一件非常有趣的事情。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "在学校里，取得好成绩比获取知识更重要。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我认为学习的目的是让我们学会思考，掌握知识。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我认真学习是为了不让父母失望。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我总是想学习新的知识。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "如果我学习越好，同学们会更喜欢我。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "一提起学习我就头疼。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "为了得到老师的表扬，我学习十分努力。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我是一个努力工作学习的人。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "无论什么事情，我开了头就要完成它。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我很勤奋。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "新的想法和计划有时会使我从原先的计划中分心。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我曾短期内着迷于某个想法或计划，但后来就失去了兴趣。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我常设定一个目标，但后来又决定去追求另一个目标。",
+      "num_choices": 5,
+      "is_negative": true
+    },
+    {
+      "text": "我很感激生活中出现的新机遇。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "更改计划或策略对实现我的人生长远目标而言很重要。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "生活中的改变激励我更加努力地工作。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "我能够应对生活中的各种环境的变换。",
+      "num_choices": 5,
+      "is_negative": false
+    },
+    {
+      "text": "智力很难改变。",
+      "num_choices": 6,
+      "is_negative": true
+    },
+    {
+      "text": "你可以学习新知识，但是你无法真正改变自己的基本智力水平。",
+      "num_choices": 6,
+      "is_negative": true
+    },
+    {
+      "text": "你有一定的智力水平，但即使付出很多努力也不能改变它。",
+      "num_choices": 6,
+      "is_negative": true
+    },
+    {
+      "text": "不管你是谁，你都可以很大程度上改变你的智力水平。",
+      "num_choices": 6,
+      "is_negative": false
+    },
+    {
+      "text": "你甚至可以在很大程度上改变你的基本智力水平。",
+      "num_choices": 6,
+      "is_negative": false
+    },
+    {
+      "text": "你总能在很大程度上改变你的智力。",
+      "num_choices": 6,
+      "is_negative": false
+    }
+  ]
+}
