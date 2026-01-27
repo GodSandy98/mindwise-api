@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, Text, Boolean
 from app.core.database import Base
 
 class Question(Base):
@@ -6,6 +6,5 @@ class Question(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
-    indicator_id = Column(Integer, ForeignKey("indicators.id"), nullable=False)
     num_choices = Column(Integer, nullable=False)
     is_negative = Column(Boolean, nullable=False, default=False)
