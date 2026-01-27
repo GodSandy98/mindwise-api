@@ -10,4 +10,4 @@ class ScoreStudent(Base):
     indicator_id = Column(Integer, ForeignKey("indicators.id"), nullable=False)
     score_raw = Column(Float, nullable=False)
     score_standardized = Column(Float, nullable=False)
-    release = Column(Integer, nullable=False)
+    exam_id = Column(Integer, ForeignKey("exams.id"), nullable=False)

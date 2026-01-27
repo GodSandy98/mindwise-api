@@ -4,8 +4,7 @@ from typing import List, Optional
 
 
 class ScoreComputeRequest(BaseModel):
-    student_ids: List[int] = Field(..., description="Target student IDs")
-    release: int = Field(..., description="Test release / round number")
+    exam_id: int = Field(..., description="Which exam the question belongs to")
 
 
 class IndicatorScore(BaseModel):
@@ -16,7 +15,7 @@ class IndicatorScore(BaseModel):
 
 class StudentScoreResult(BaseModel):
     student_id: int
-    release: int
+    exam_id: int
     indicator_scores: List[IndicatorScore] = Field(default_factory=list)
 
 

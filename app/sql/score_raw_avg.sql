@@ -12,6 +12,5 @@ JOIN questions q
     ON q.id = a.question_id
 JOIN indicator_question iq
     ON iq.question_id = q.id
-WHERE a.release = :release
-  AND a.student_id IN :student_ids
+WHERE a.exam_id = :exam_id
 GROUP BY a.student_id, iq.indicator_id;

@@ -5,7 +5,7 @@ from app.models.student import Student
 from app.models.class_ import Class
 from app.schemas.student import StudentResponse
 
-router = APIRouter()
+router = APIRouter(prefix="/students", tags=["students"])
 
 
 def _fetch_students_or_404(db: Session, student_ids: list[int]) -> dict[int, Student]:

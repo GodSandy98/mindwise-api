@@ -13,7 +13,7 @@ WITH raw_all AS (
     ON q.id = a.question_id
   JOIN indicator_question qi
     ON qi.question_id = q.id
-  WHERE a.release = :release
+  WHERE a.exam_id = :exam_id
   GROUP BY a.student_id, qi.indicator_id
 )
 SELECT

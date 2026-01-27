@@ -26,24 +26,25 @@ def compute_score_api(
     db: Session = Depends(get_db)
 ) -> ScoreComputeResponse:
     """
-    根据student_id和release，计算student的score
-    逻辑是先把这次release的均分计算，再根据这次release下面student的answer激素那score
+    根据exam_id，计算student的score
+    1. 先用exam_id从db取得这次exam下所有学生的answer
+    2. 根据answers, questions, indicator的关联关系，计算每个student的每项indicator的score_raw
+    3. 再计算这次exam全校每个indicator的均值和标准差
+    4. 根据2和3的结果，计算标准化后的每个学生，每项indicator的score_standardized
     :param payload:
     :param db:
     :return:
     """
     try:
-        student_ids = _validate_and_dedup_student_ids(payload.student_ids)
-        students_by_id = _fetch_students_or_404(db, student_ids)
 
-        raw_scores = _compute_score_raw_avg(db, student_ids, payload.release)
-        stats_by_indicator = _compute_indicator_stats_for_release(db, payload.release)
+        raw_scores = _compute_score_raw_avg(db, payload.exam_id)
+        stats_by_indicator = _compute_indicator_stats_for_release(db, payload.exam_id)
 
         scores = _apply_standardization(raw_scores, stats_by_indicator)
 
         with db.begin_nested():
-            _upsert_scores(db, student_ids, payload.release, scores)
-            return _build_response(student_ids, payload.release, students_by_id, scores)
+            _upsert_scores(db, payload.exam_id, scores)
+            return _build_response(payload.exam_id, scores)
 
     except HTTPException:
         raise
@@ -54,26 +55,23 @@ def compute_score_api(
 
 def _compute_score_raw_avg(
     db: Session,
-    student_ids: List[int],
-    release: int,
+    exam_id: int,
 ) -> Dict[int, List[dict]]:
-    out: Dict[int, List[dict]] = {sid: [] for sid in student_ids}
+    out: Dict[int, List[dict]] = {}
 
-    stmt = load_text_query("score_raw_avg", expanding_params=("student_ids",))
-    rows = db.execute(stmt, {"release": release, "student_ids": student_ids}).mappings().all()
+    stmt = load_text_query("score_raw_avg")
+    rows = db.execute(stmt, {"exam_id": exam_id, }).mappings().all()
 
-    for r in rows:
-        sid = int(r["student_id"])
-        out[sid].append(
-            {
-                "indicator_id": int(r["indicator_id"]),
-                "score_raw": float(r["score_raw"]) if r["score_raw"] is not None else 0.0,
-            }
-        )
+    for row in rows:
+        sid = int(row["student_id"])
+        out.setdefault(sid, []).append({
+            "indicator_id": int(row["indicator_id"]),
+            "score_raw": float(row["score_raw"]) if row["score_raw"] is not None else 0.0,
+        })
     return out
 
 
-def _compute_indicator_stats_for_release(db: Session, release: int) -> Dict[int, Tuple[float, float]]:
+def _compute_indicator_stats_for_release(db: Session, exam_id: int) -> Dict[int, Tuple[float, float]]:
     """
     返回：{indicator_id: (mean, std)}
     - mean/std 均基于“全校该 release”的 raw（按学生-指标先 AVG 得到 raw，再在指标维度统计）
@@ -81,13 +79,13 @@ def _compute_indicator_stats_for_release(db: Session, release: int) -> Dict[int,
     """
     stmt = load_text_query("indicator_stats_release")  # 对应 app/sql/indicator_stats_release.sql
 
-    rows = db.execute(stmt, {"release": release}).mappings().all()
+    rows = db.execute(stmt, {"exam_id": exam_id}).mappings().all()
 
     stats: Dict[int, Tuple[float, float]] = {}
-    for r in rows:
-        indicator_id = int(r["indicator_id"])
-        mean = float(r["mean"]) if r["mean"] is not None else 0.0
-        variance = float(r["variance"]) if r["variance"] is not None else 0.0
+    for row in rows:
+        indicator_id = int(row["indicator_id"])
+        mean = float(row["mean"]) if row["mean"] is not None else 0.0
+        variance = float(row["variance"]) if row["variance"] is not None else 0.0
 
         if variance <= 0:
             std = 0.0
@@ -142,8 +140,7 @@ def _apply_standardization(
 
 def _upsert_scores(
     db: Session,
-    student_ids: list[int],
-    release: int,
+    exam_id: int,
     scores_by_student: dict[int, list[dict]],
 ) -> None:
     """
@@ -155,19 +152,18 @@ def _upsert_scores(
     """
     # 1) 删除旧数据
     db.query(ScoreStudent).filter(
-        ScoreStudent.release == release,
-        ScoreStudent.student_id.in_(student_ids),
+        ScoreStudent.exam_id == exam_id,
     ).delete(synchronize_session=False)
 
     # 2) 批量插入新数据（raw + standardized 一起写）
     inserts: list[ScoreStudent] = []
-    for sid in student_ids:
-        for item in scores_by_student.get(sid, []):
+    for sid, items in scores_by_student.items():
+        for item in items:
             inserts.append(
                 ScoreStudent(
                     student_id=sid,
                     indicator_id=int(item["indicator_id"]),
-                    release=release,
+                    exam_id=exam_id,
                     score_raw=float(item["score_raw"]),
                     score_standardized=item.get("score_standardized"),
                 )
@@ -178,15 +174,12 @@ def _upsert_scores(
 
 
 def _build_response(
-    student_ids: list[int],
-    release: int,
-    students_by_id: dict[int, "Student"],
+    exam_id: int,
     scores_by_student: dict[int, list[dict]],
 ) -> ScoreComputeResponse:
     results: list[StudentScoreResult] = []
 
-    for sid in student_ids:
-        items = scores_by_student.get(sid, [])
+    for sid, items in scores_by_student.items():
         indicator_scores = [
             IndicatorScore(
                 indicator_id=int(x["indicator_id"]),
@@ -199,7 +192,7 @@ def _build_response(
         results.append(
             StudentScoreResult(
                 student_id=sid,
-                release=release,
+                exam_id=exam_id,
                 indicator_scores=indicator_scores,
             )
         )
