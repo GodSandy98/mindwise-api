@@ -3,6 +3,7 @@ from .class_ import Class
 from .student import Student
 from .indicator import Indicator
 from .question import Question
+from .exam import Exam
 from .answer import Answer
 from .score_student import ScoreStudent
 from .report import Report
