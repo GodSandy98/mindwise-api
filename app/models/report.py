@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from app.core.database import Base
 
 
@@ -11,5 +11,6 @@ class Report(Base):
     motivational_system = Column(String(255))
     regulatory_system = Column(String(255))
     executive_system = Column(String(255))
-    release = Column(Integer, nullable=False)
+    profile_interpretation = Column(Text)
+    exam_id = Column(Integer, ForeignKey("exams.id"), nullable=False)
     
