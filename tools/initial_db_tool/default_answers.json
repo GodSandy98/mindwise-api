@@ -1,0 +1,653 @@
+[
+  {
+    "id": 1,
+    "student_id": 1,
+    "question_id": 1,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 2,
+    "student_id": 1,
+    "question_id": 2,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 3,
+    "student_id": 1,
+    "question_id": 3,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 4,
+    "student_id": 1,
+    "question_id": 4,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 5,
+    "student_id": 1,
+    "question_id": 5,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 6,
+    "student_id": 1,
+    "question_id": 6,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 7,
+    "student_id": 1,
+    "question_id": 7,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 8,
+    "student_id": 1,
+    "question_id": 8,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 9,
+    "student_id": 1,
+    "question_id": 9,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 10,
+    "student_id": 1,
+    "question_id": 10,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 11,
+    "student_id": 1,
+    "question_id": 11,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 12,
+    "student_id": 1,
+    "question_id": 12,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 13,
+    "student_id": 1,
+    "question_id": 13,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 14,
+    "student_id": 1,
+    "question_id": 14,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 15,
+    "student_id": 1,
+    "question_id": 15,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 16,
+    "student_id": 1,
+    "question_id": 16,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 17,
+    "student_id": 1,
+    "question_id": 17,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 18,
+    "student_id": 1,
+    "question_id": 18,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 19,
+    "student_id": 1,
+    "question_id": 19,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 20,
+    "student_id": 1,
+    "question_id": 20,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 21,
+    "student_id": 1,
+    "question_id": 21,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 22,
+    "student_id": 1,
+    "question_id": 22,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 23,
+    "student_id": 1,
+    "question_id": 23,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 24,
+    "student_id": 1,
+    "question_id": 24,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 25,
+    "student_id": 1,
+    "question_id": 25,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 26,
+    "student_id": 1,
+    "question_id": 26,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 27,
+    "student_id": 1,
+    "question_id": 27,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 28,
+    "student_id": 1,
+    "question_id": 28,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 29,
+    "student_id": 1,
+    "question_id": 29,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 30,
+    "student_id": 1,
+    "question_id": 30,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 31,
+    "student_id": 1,
+    "question_id": 31,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 32,
+    "student_id": 1,
+    "question_id": 32,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 33,
+    "student_id": 1,
+    "question_id": 33,
+    "answer": 3,
+    "exam_id": 1
+  },
+  {
+    "id": 34,
+    "student_id": 1,
+    "question_id": 34,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 35,
+    "student_id": 1,
+    "question_id": 35,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 36,
+    "student_id": 1,
+    "question_id": 36,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 37,
+    "student_id": 1,
+    "question_id": 37,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 38,
+    "student_id": 1,
+    "question_id": 38,
+    "answer": 3,
+    "exam_id": 1
+  },
+  {
+    "id": 39,
+    "student_id": 1,
+    "question_id": 39,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 40,
+    "student_id": 1,
+    "question_id": 40,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 41,
+    "student_id": 1,
+    "question_id": 41,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 42,
+    "student_id": 1,
+    "question_id": 42,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 43,
+    "student_id": 1,
+    "question_id": 43,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 44,
+    "student_id": 1,
+    "question_id": 44,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 45,
+    "student_id": 1,
+    "question_id": 45,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 46,
+    "student_id": 1,
+    "question_id": 46,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 47,
+    "student_id": 1,
+    "question_id": 47,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 48,
+    "student_id": 1,
+    "question_id": 48,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 49,
+    "student_id": 1,
+    "question_id": 49,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 50,
+    "student_id": 1,
+    "question_id": 50,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 51,
+    "student_id": 1,
+    "question_id": 51,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 52,
+    "student_id": 1,
+    "question_id": 52,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 53,
+    "student_id": 1,
+    "question_id": 53,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 54,
+    "student_id": 1,
+    "question_id": 54,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 55,
+    "student_id": 1,
+    "question_id": 55,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 56,
+    "student_id": 1,
+    "question_id": 56,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 57,
+    "student_id": 1,
+    "question_id": 57,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 58,
+    "student_id": 1,
+    "question_id": 58,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 59,
+    "student_id": 1,
+    "question_id": 59,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 60,
+    "student_id": 1,
+    "question_id": 60,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 61,
+    "student_id": 1,
+    "question_id": 61,
+    "answer": 3,
+    "exam_id": 1
+  },
+  {
+    "id": 62,
+    "student_id": 1,
+    "question_id": 62,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 63,
+    "student_id": 1,
+    "question_id": 63,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 64,
+    "student_id": 1,
+    "question_id": 64,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 65,
+    "student_id": 1,
+    "question_id": 65,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 66,
+    "student_id": 1,
+    "question_id": 66,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 67,
+    "student_id": 1,
+    "question_id": 67,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 68,
+    "student_id": 1,
+    "question_id": 68,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 69,
+    "student_id": 1,
+    "question_id": 69,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 70,
+    "student_id": 1,
+    "question_id": 70,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 71,
+    "student_id": 1,
+    "question_id": 71,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 72,
+    "student_id": 1,
+    "question_id": 72,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 73,
+    "student_id": 1,
+    "question_id": 73,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 74,
+    "student_id": 1,
+    "question_id": 74,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 75,
+    "student_id": 1,
+    "question_id": 75,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 76,
+    "student_id": 1,
+    "question_id": 76,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 77,
+    "student_id": 1,
+    "question_id": 77,
+    "answer": 1,
+    "exam_id": 1
+  },
+  {
+    "id": 78,
+    "student_id": 1,
+    "question_id": 78,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 79,
+    "student_id": 1,
+    "question_id": 79,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 80,
+    "student_id": 1,
+    "question_id": 80,
+    "answer": 3,
+    "exam_id": 1
+  },
+  {
+    "id": 81,
+    "student_id": 1,
+    "question_id": 81,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 82,
+    "student_id": 1,
+    "question_id": 82,
+    "answer": 2,
+    "exam_id": 1
+  },
+  {
+    "id": 83,
+    "student_id": 1,
+    "question_id": 83,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 84,
+    "student_id": 1,
+    "question_id": 84,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 85,
+    "student_id": 1,
+    "question_id": 85,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 86,
+    "student_id": 1,
+    "question_id": 86,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 87,
+    "student_id": 1,
+    "question_id": 87,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 88,
+    "student_id": 1,
+    "question_id": 88,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 89,
+    "student_id": 1,
+    "question_id": 89,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 90,
+    "student_id": 1,
+    "question_id": 90,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 91,
+    "student_id": 1,
+    "question_id": 91,
+    "answer": 4,
+    "exam_id": 1
+  },
+  {
+    "id": 92,
+    "student_id": 1,
+    "question_id": 92,
+    "answer": 5,
+    "exam_id": 1
+  },
+  {
+    "id": 93,
+    "student_id": 1,
+    "question_id": 93,
+    "answer": 3,
+    "exam_id": 1
+  }
+]

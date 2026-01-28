@@ -5,6 +5,7 @@ from .indicator import Indicator
 from .question import Question
 from .exam import Exam
 from .answer import Answer
+from .indicator_question import IndicatorQuestion
 from .score_student import ScoreStudent
 from .report import Report
 from .report_indicator import ReportIndicator
