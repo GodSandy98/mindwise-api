@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
 
 class ReportGenerateRequest(BaseModel):
@@ -31,3 +31,33 @@ class ReportGenerateResponse(BaseModel):
     improvement_suggestions: List[ImprovementSuggestion] = Field(
         description="五、针对性改进建议（针对最低三项各一条）"
     )
+
+
+class ReportSaveRequest(BaseModel):
+    student_id: int
+    exam_id: int
+    strengths_analysis: List[IndicatorAnalysis]
+    weaknesses_analysis: List[IndicatorAnalysis]
+    improvement_suggestions: List[ImprovementSuggestion]
+
+
+class SavedIndicatorAnalysis(BaseModel):
+    indicator_id: int
+    indicator_name: str
+    analysis: Optional[str] = None
+    suggestion: Optional[str] = None
+    is_positive: Optional[bool] = None
+
+
+class ReportSaveResponse(BaseModel):
+    report_id: int
+    student_id: int
+    exam_id: int
+    indicators: List[SavedIndicatorAnalysis]
+
+
+class ReportGetResponse(BaseModel):
+    report_id: int
+    student_id: int
+    exam_id: int
+    indicators: List[SavedIndicatorAnalysis]

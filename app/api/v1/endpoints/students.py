@@ -54,3 +54,17 @@ def get_all_students(db: Session = Depends(get_db)):
             )
         )
     return result
+
+
+@router.get("/{student_id}", response_model=StudentResponse)
+def get_student(student_id: int, db: Session = Depends(get_db)):
+    row = (
+        db.query(Student, Class.name.label("class_name"))
+        .join(Class, Student.class_id == Class.id)
+        .filter(Student.id == student_id)
+        .first()
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail=f"student_id={student_id} 不存在")
+    student, class_name = row
+    return StudentResponse(id=student.id, name=student.name, class_id=student.class_id, class_name=class_name)

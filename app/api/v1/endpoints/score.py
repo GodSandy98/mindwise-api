@@ -20,6 +20,49 @@ from app.models.score_student import ScoreStudent
 router = APIRouter(prefix="/scores", tags=["scores"])
 
 
+@router.get("/student/{student_id}", response_model=StudentScoreResult)
+def get_student_scores(student_id: int, exam_id: int, db: Session = Depends(get_db)):
+    rows = db.query(ScoreStudent).filter(
+        ScoreStudent.student_id == student_id,
+        ScoreStudent.exam_id == exam_id,
+    ).all()
+    if not rows:
+        raise HTTPException(
+            status_code=404,
+            detail=f"未找到 student_id={student_id}, exam_id={exam_id} 的得分，请先调用 /scores/compute",
+        )
+    return StudentScoreResult(
+        student_id=student_id,
+        exam_id=exam_id,
+        indicator_scores=[
+            IndicatorScore(
+                indicator_id=r.indicator_id,
+                score_raw=r.score_raw,
+                score_standardized=r.score_standardized,
+            )
+            for r in rows
+        ],
+    )
+
+
+@router.get("/exam/{exam_id}", response_model=ScoreComputeResponse)
+def get_exam_scores(exam_id: int, db: Session = Depends(get_db)):
+    rows = db.query(ScoreStudent).filter(ScoreStudent.exam_id == exam_id).all()
+    if not rows:
+        raise HTTPException(
+            status_code=404,
+            detail=f"未找到 exam_id={exam_id} 的得分，请先调用 /scores/compute",
+        )
+    by_student: Dict[int, List[dict]] = {}
+    for r in rows:
+        by_student.setdefault(r.student_id, []).append({
+            "indicator_id": r.indicator_id,
+            "score_raw": r.score_raw,
+            "score_standardized": r.score_standardized,
+        })
+    return _build_response(exam_id, by_student)
+
+
 @router.post("/compute", response_model=ScoreComputeResponse)
 def compute_score_api(
     payload: ScoreComputeRequest,
