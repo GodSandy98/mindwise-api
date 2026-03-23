@@ -11,6 +11,8 @@ from app.models.indicator import Indicator
 from app.models.score_student import ScoreStudent
 from app.models.report import Report
 from app.models.report_indicator import ReportIndicator
+from app.models.student import Student
+from app.models.teacher import Teacher
 from app.schemas.report import (
     ReportGenerateRequest,
     ReportGenerateResponse,
@@ -21,6 +23,7 @@ from app.schemas.report import (
     ReportGetResponse,
     SavedIndicatorAnalysis,
 )
+from app.api.v1.deps import get_current_teacher, assert_student_class_access
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -91,6 +94,7 @@ def _build_prompt(
 def generate_report(
     payload: ReportGenerateRequest,
     db: Session = Depends(get_db),
+    current: Teacher = Depends(get_current_teacher),
 ) -> ReportGenerateResponse:
     """
     为指定学生生成个性化报告的三、四、五部分：
@@ -100,6 +104,11 @@ def generate_report(
     """
     if not QWEN_API_KEY:
         raise HTTPException(status_code=500, detail="QWEN_API_KEY 未配置")
+
+    student = db.query(Student).filter(Student.id == payload.student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="学生不存在")
+    assert_student_class_access(current, student.class_id)
 
     # 1. 取该学生在该次考试的所有指标得分，JOIN indicator 获取名称
     rows = (
@@ -215,7 +224,16 @@ def generate_report(
 
 
 @router.post("/save", response_model=ReportSaveResponse)
-def save_report(payload: ReportSaveRequest, db: Session = Depends(get_db)):
+def save_report(
+    payload: ReportSaveRequest,
+    db: Session = Depends(get_db),
+    current: Teacher = Depends(get_current_teacher),
+):
+    student = db.query(Student).filter(Student.id == payload.student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="学生不存在")
+    assert_student_class_access(current, student.class_id)
+
     # 构建 indicator_name -> indicator_id 映射
     indicator_names = (
         [a.indicator_name for a in payload.strengths_analysis]
@@ -295,7 +313,17 @@ def save_report(payload: ReportSaveRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/student/{student_id}", response_model=ReportGetResponse)
-def get_report(student_id: int, exam_id: int, db: Session = Depends(get_db)):
+def get_report(
+    student_id: int,
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current: Teacher = Depends(get_current_teacher),
+):
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="学生不存在")
+    assert_student_class_access(current, student.class_id)
+
     report = (
         db.query(Report)
         .filter(Report.student_id == student_id, Report.release == exam_id)
