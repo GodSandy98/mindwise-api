@@ -9,11 +9,17 @@ from app.core.config import QWEN_API_KEY, QWEN_BASE_URL, QWEN_MODEL
 from app.db.session import get_db
 from app.models.indicator import Indicator
 from app.models.score_student import ScoreStudent
+from app.models.report import Report
+from app.models.report_indicator import ReportIndicator
 from app.schemas.report import (
     ReportGenerateRequest,
     ReportGenerateResponse,
     IndicatorAnalysis,
     ImprovementSuggestion,
+    ReportSaveRequest,
+    ReportSaveResponse,
+    ReportGetResponse,
+    SavedIndicatorAnalysis,
 )
 
 router = APIRouter(prefix="/reports", tags=["reports"])
@@ -205,4 +211,121 @@ def generate_report(
         strengths_analysis=strengths,
         weaknesses_analysis=weaknesses,
         improvement_suggestions=suggestions,
+    )
+
+
+@router.post("/save", response_model=ReportSaveResponse)
+def save_report(payload: ReportSaveRequest, db: Session = Depends(get_db)):
+    # 构建 indicator_name -> indicator_id 映射
+    indicator_names = (
+        [a.indicator_name for a in payload.strengths_analysis]
+        + [a.indicator_name for a in payload.weaknesses_analysis]
+    )
+    indicators = db.query(Indicator).filter(Indicator.name.in_(indicator_names)).all()
+    name_to_id = {ind.name: ind.id for ind in indicators}
+
+    # 建立 suggestion 映射
+    suggestion_map = {s.indicator_name: s.suggestion for s in payload.improvement_suggestions}
+
+    try:
+        with db.begin_nested():
+            # 幂等：删除旧报告
+            old_report = (
+                db.query(Report)
+                .filter(Report.student_id == payload.student_id, Report.release == payload.exam_id)
+                .first()
+            )
+            if old_report:
+                db.query(ReportIndicator).filter(ReportIndicator.report_id == old_report.id).delete(
+                    synchronize_session=False
+                )
+                db.delete(old_report)
+                db.flush()
+
+            report = Report(student_id=payload.student_id, release=payload.exam_id)
+            db.add(report)
+            db.flush()
+
+            rows: list[ReportIndicator] = []
+            for item in payload.strengths_analysis:
+                ind_id = name_to_id.get(item.indicator_name)
+                rows.append(
+                    ReportIndicator(
+                        report_id=report.id,
+                        indicator_id=ind_id,
+                        analysis=item.analysis,
+                        suggestion=None,
+                        is_positive=True,
+                    )
+                )
+            for item in payload.weaknesses_analysis:
+                ind_id = name_to_id.get(item.indicator_name)
+                rows.append(
+                    ReportIndicator(
+                        report_id=report.id,
+                        indicator_id=ind_id,
+                        analysis=item.analysis,
+                        suggestion=suggestion_map.get(item.indicator_name),
+                        is_positive=False,
+                    )
+                )
+            db.add_all(rows)
+
+        saved = [
+            SavedIndicatorAnalysis(
+                indicator_id=r.indicator_id,
+                indicator_name=next((n for n, i in name_to_id.items() if i == r.indicator_id), ""),
+                analysis=r.analysis,
+                suggestion=r.suggestion,
+                is_positive=r.is_positive,
+            )
+            for r in rows
+        ]
+        return ReportSaveResponse(
+            report_id=report.id,
+            student_id=payload.student_id,
+            exam_id=payload.exam_id,
+            indicators=saved,
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail={"message": "保存报告失败", "error": str(e)})
+
+
+@router.get("/student/{student_id}", response_model=ReportGetResponse)
+def get_report(student_id: int, exam_id: int, db: Session = Depends(get_db)):
+    report = (
+        db.query(Report)
+        .filter(Report.student_id == student_id, Report.release == exam_id)
+        .first()
+    )
+    if not report:
+        raise HTTPException(
+            status_code=404,
+            detail=f"未找到 student_id={student_id}, exam_id={exam_id} 的报告，请先调用 /reports/save",
+        )
+
+    rows = (
+        db.query(ReportIndicator, Indicator)
+        .join(Indicator, ReportIndicator.indicator_id == Indicator.id)
+        .filter(ReportIndicator.report_id == report.id)
+        .all()
+    )
+    indicators = [
+        SavedIndicatorAnalysis(
+            indicator_id=ind.id,
+            indicator_name=ind.name,
+            analysis=ri.analysis,
+            suggestion=ri.suggestion,
+            is_positive=ri.is_positive,
+        )
+        for ri, ind in rows
+    ]
+    return ReportGetResponse(
+        report_id=report.id,
+        student_id=student_id,
+        exam_id=exam_id,
+        indicators=indicators,
     )
