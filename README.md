@@ -28,16 +28,34 @@ API 文档地址：`http://localhost:8000/docs`
 在项目根目录创建 `.env` 文件：
 
 ```env
-DATABASE_URL=sqlite:///./mindwise.db   # 默认值，可替换为 PostgreSQL 等
+DATABASE_URL=sqlite:///./mindwise.db          # 默认值，可替换为 PostgreSQL 等
+SECRET_KEY=your-secret-key-change-in-prod     # JWT 签名密钥，生产环境必须修改
+ACCESS_TOKEN_EXPIRE_MINUTES=1440              # Token 有效期（分钟），默认 24 小时
+QWEN_API_KEY=your-qwen-api-key               # 阿里云百炼 API Key，报告生成功能必填
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1  # 默认值
+QWEN_MODEL=qwen-plus                          # 默认模型，可替换
 ```
 
 ## API 接口
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/v1/health` | 健康检查 |
-| GET | `/api/v1/students/students` | 获取所有学生及班级信息 |
-| POST | `/api/v1/scores/compute` | 计算某次考试的评分 |
+| 方法 | 路径 | 说明 | 权限 |
+|------|------|------|------|
+| GET | `/api/v1/health` | 健康检查 | 公开 |
+| POST | `/api/v1/auth/login` | 手机号密码登录，返回 JWT | 公开 |
+| POST | `/api/v1/auth/register` | 教师注册 | 公开 |
+| GET | `/api/v1/students/students` | 获取所有学生及班级信息 | 已登录 |
+| GET | `/api/v1/students/{id}` | 获取单个学生详情 | 已登录 |
+| GET | `/api/v1/classes/` | 获取班级列表 | 已登录 |
+| GET | `/api/v1/exams/` | 获取考试列表 | 已登录 |
+| POST | `/api/v1/exams/` | 创建考试 | admin+ |
+| GET | `/api/v1/answers/` | 获取答卷记录 | 已登录 |
+| POST | `/api/v1/answers/submit` | 提交学生答卷 | 已登录 |
+| GET | `/api/v1/indicators/` | 获取心理指标列表 | 已登录 |
+| POST | `/api/v1/scores/compute` | 计算某次考试的评分 | admin+ |
+| GET | `/api/v1/scores/student/{id}` | 获取学生得分 | 已登录 |
+| GET | `/api/v1/reports/{student_id}` | 获取/生成 LLM 分析报告 | admin+ |
+| GET | `/api/v1/teachers/` | 获取教师列表 | super_admin |
+| GET | `/api/v1/surveys/` | 获取问卷配置 | 已登录 |
 
 ### POST `/api/v1/scores/compute`
 
