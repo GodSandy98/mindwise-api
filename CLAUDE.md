@@ -20,13 +20,22 @@ python tools/initial_db_tool/init_db_with_seeding_data.py
 ## Architecture
 
 - **Entry point**: `app/main.py` — registers routers, creates DB tables on startup
-- **Routers**: `app/api/v1/endpoints/` — one file per domain (health, students, score, reports, surveys)
+- **Routers**: `app/api/v1/endpoints/` — one file per domain (auth, health, students, classes, exams, answers, indicators, score, reports, surveys, teachers)
 - **Models**: `app/models/` — SQLAlchemy ORM (student, class\_, exam, question, answer, indicator, indicator\_question, score\_student, report, report\_indicator)
 - **Schemas**: `app/schemas/` — Pydantic v2 models for request/response
 - **DB session**: `app/db/session.py` — `get_db()` dependency
 - **SQL loader**: `app/db/sql_loader.py` — loads `.sql` files from `app/sql/`
 - **Raw SQL**: `app/sql/` — `score_raw_avg.sql`, `indicator_stats_release.sql`
 - **Config**: `app/core/database.py` — reads `DATABASE_URL` from env, defaults to `mindwise.db` at project root
+
+## Auth & RBAC
+
+- **Dependencies**: `app/api/v1/deps.py` — `get_current_teacher` validates JWT and injects the teacher; `require_admin_or_above` enforces role
+- **Roles** (stored in JWT payload):
+  - `super_admin` — full access including teacher management
+  - `admin_teacher` — all student data + report generation
+  - `class_teacher` — own class only (filtered by `class_id` in token)
+- **Env vars required**: `SECRET_KEY` (JWT signing), `QWEN_API_KEY` (report generation), `ACCESS_TOKEN_EXPIRE_MINUTES` (default 1440)
 
 ## Key Conventions
 
