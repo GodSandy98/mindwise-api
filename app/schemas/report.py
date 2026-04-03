@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
@@ -61,3 +62,27 @@ class ReportGetResponse(BaseModel):
     student_id: int
     exam_id: int
     indicators: List[SavedIndicatorAnalysis]
+
+
+# ── 历史版本 ──────────────────────────────────────────────
+
+class IndicatorVersion(BaseModel):
+    version: int
+    analysis: Optional[str] = None
+    suggestion: Optional[str] = None
+    is_current: bool
+    created_at: datetime
+
+
+class IndicatorHistory(BaseModel):
+    indicator_id: int
+    indicator_name: str
+    is_positive: bool
+    versions: List[IndicatorVersion]  # 按 version 倒序
+
+
+class IndicatorHistoryResponse(BaseModel):
+    report_id: int
+    student_id: int
+    exam_id: int
+    indicators: List[IndicatorHistory]

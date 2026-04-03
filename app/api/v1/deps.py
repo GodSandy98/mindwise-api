@@ -34,6 +34,13 @@ def require_admin_or_above(current: Teacher = Depends(get_current_teacher)) -> T
     return current
 
 
+def require_psych_or_above(current: Teacher = Depends(get_current_teacher)) -> Teacher:
+    """心理教师、管理教师、超级管理员可调用报告生成接口"""
+    if current.role not in ("super_admin", "admin_teacher", "psych_teacher"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="需要心理教师或以上权限")
+    return current
+
+
 def class_filter(teacher: Teacher) -> int | None:
     """Returns class_id to filter by, or None meaning no filter.
     Raises 403 if class_teacher has no assigned class yet."""
