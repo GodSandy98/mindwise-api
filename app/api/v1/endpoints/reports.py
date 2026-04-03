@@ -22,8 +22,11 @@ from app.schemas.report import (
     ReportSaveResponse,
     ReportGetResponse,
     SavedIndicatorAnalysis,
+    IndicatorHistoryResponse,
+    IndicatorHistory,
+    IndicatorVersion,
 )
-from app.api.v1.deps import get_current_teacher, assert_student_class_access
+from app.api.v1.deps import get_current_teacher, require_psych_or_above, assert_student_class_access
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -94,7 +97,7 @@ def _build_prompt(
 def generate_report(
     payload: ReportGenerateRequest,
     db: Session = Depends(get_db),
-    current: Teacher = Depends(get_current_teacher),
+    current: Teacher = Depends(require_psych_or_above),
 ) -> ReportGenerateResponse:
     """
     为指定学生生成个性化报告的三、四、五部分：
@@ -247,23 +250,31 @@ def save_report(
 
     try:
         with db.begin_nested():
-            # 幂等：删除旧报告
-            old_report = (
+            # 复用或新建 report 主记录
+            report = (
                 db.query(Report)
                 .filter(Report.student_id == payload.student_id, Report.release == payload.exam_id)
                 .first()
             )
-            if old_report:
-                db.query(ReportIndicator).filter(ReportIndicator.report_id == old_report.id).delete(
-                    synchronize_session=False
-                )
-                db.delete(old_report)
+            if not report:
+                report = Report(student_id=payload.student_id, release=payload.exam_id)
+                db.add(report)
                 db.flush()
 
-            report = Report(student_id=payload.student_id, release=payload.exam_id)
-            db.add(report)
-            db.flush()
+            # 计算下一个版本号（当前最大版本 + 1）
+            from sqlalchemy import func
+            max_ver = db.query(func.max(ReportIndicator.version)).filter(
+                ReportIndicator.report_id == report.id
+            ).scalar() or 0
+            next_version = max_ver + 1
 
+            # 将该报告下所有当前版本标记为非当前
+            db.query(ReportIndicator).filter(
+                ReportIndicator.report_id == report.id,
+                ReportIndicator.is_current == True,
+            ).update({"is_current": False}, synchronize_session=False)
+
+            # 插入新版本记录
             rows: list[ReportIndicator] = []
             for item in payload.strengths_analysis:
                 ind_id = name_to_id.get(item.indicator_name)
@@ -274,6 +285,8 @@ def save_report(
                         analysis=item.analysis,
                         suggestion=None,
                         is_positive=True,
+                        version=next_version,
+                        is_current=True,
                     )
                 )
             for item in payload.weaknesses_analysis:
@@ -285,6 +298,8 @@ def save_report(
                         analysis=item.analysis,
                         suggestion=suggestion_map.get(item.indicator_name),
                         is_positive=False,
+                        version=next_version,
+                        is_current=True,
                     )
                 )
             db.add_all(rows)
@@ -338,7 +353,7 @@ def get_report(
     rows = (
         db.query(ReportIndicator, Indicator)
         .join(Indicator, ReportIndicator.indicator_id == Indicator.id)
-        .filter(ReportIndicator.report_id == report.id)
+        .filter(ReportIndicator.report_id == report.id, ReportIndicator.is_current == True)
         .all()
     )
     indicators = [
@@ -356,4 +371,61 @@ def get_report(
         student_id=student_id,
         exam_id=exam_id,
         indicators=indicators,
+    )
+
+
+@router.get("/student/{student_id}/indicator-history", response_model=IndicatorHistoryResponse)
+def get_indicator_history(
+    student_id: int,
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current: Teacher = Depends(require_psych_or_above),
+):
+    """返回该报告下所有指标的全部历史版本（按指标分组，每组按 version 倒序）"""
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="学生不存在")
+    assert_student_class_access(current, student.class_id)
+
+    report = (
+        db.query(Report)
+        .filter(Report.student_id == student_id, Report.release == exam_id)
+        .first()
+    )
+    if not report:
+        raise HTTPException(status_code=404, detail="报告不存在")
+
+    rows = (
+        db.query(ReportIndicator, Indicator)
+        .join(Indicator, ReportIndicator.indicator_id == Indicator.id)
+        .filter(ReportIndicator.report_id == report.id)
+        .order_by(ReportIndicator.indicator_id, ReportIndicator.version.desc())
+        .all()
+    )
+
+    # 按指标分组
+    grouped: dict[int, dict] = {}
+    for ri, ind in rows:
+        if ind.id not in grouped:
+            grouped[ind.id] = {
+                "indicator_id": ind.id,
+                "indicator_name": ind.name,
+                "is_positive": ri.is_positive,
+                "versions": [],
+            }
+        grouped[ind.id]["versions"].append(
+            IndicatorVersion(
+                version=ri.version,
+                analysis=ri.analysis,
+                suggestion=ri.suggestion,
+                is_current=ri.is_current,
+                created_at=ri.created_at,
+            )
+        )
+
+    return IndicatorHistoryResponse(
+        report_id=report.id,
+        student_id=student_id,
+        exam_id=exam_id,
+        indicators=[IndicatorHistory(**v) for v in grouped.values()],
     )
