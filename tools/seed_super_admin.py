@@ -5,6 +5,10 @@ Run once to create the first super_admin:
 """
 import sys
 import argparse
+
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 sys.path.insert(0, ".")
 
 from app.core.database import Base, engine
