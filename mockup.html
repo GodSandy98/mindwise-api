@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindWise — 心理测评系统 UI 草图</title>
+<style>
+  :root {
+    --primary: #4F6EF7;
+    --primary-light: #EEF1FE;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #06B6D4;
+    --muted: #6B7280;
+    --border: #E5E7EB;
+    --bg: #F9FAFB;
+    --card: #FFFFFF;
+    --text: #111827;
+    --sidebar-w: 220px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* ── 整体布局 ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ── 侧边栏 ── */
+  .sidebar {
+    width: var(--sidebar-w); background: #1E2A4A; color: #CBD5E1;
+    display: flex; flex-direction: column; flex-shrink: 0;
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 20px 18px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #2D3E60;
+  }
+  .logo-icon {
+    width: 36px; height: 36px; background: var(--primary);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-size: 16px; font-weight: 700; color: #fff; }
+  .logo-sub { font-size: 10px; color: #94A3B8; }
+
+  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-section { font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+    color: #475569; padding: 14px 18px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px; cursor: pointer; border-radius: 0;
+    transition: background .15s; color: #94A3B8; font-size: 13.5px;
+  }
+  .nav-item:hover { background: #2D3E60; color: #fff; }
+  .nav-item.active { background: var(--primary); color: #fff; }
+  .nav-icon { width: 20px; text-align: center; font-size: 15px; }
+  .nav-badge {
+    margin-left: auto; background: var(--danger); color: #fff;
+    font-size: 10px; padding: 1px 5px; border-radius: 9px;
+  }
+
+  .sidebar-user {
+    padding: 14px 18px; border-top: 1px solid #2D3E60;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary); display: flex; align-items: center;
+    justify-content: center; font-weight: 700; color: #fff; font-size: 13px; flex-shrink: 0;
+  }
+  .user-info .name { font-size: 13px; color: #fff; font-weight: 600; }
+  .user-info .role { font-size: 11px; color: #64748B; }
+
+  /* ── 主内容 ── */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+  /* ── 顶部栏 ── */
+  .topbar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 28px; height: 60px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-size: 17px; font-weight: 700; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .exam-select {
+    border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px;
+    font-size: 13px; background: var(--bg); color: var(--text);
+  }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--card); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; position: relative;
+  }
+  .notif-dot {
+    width: 8px; height: 8px; background: var(--danger); border-radius: 50%;
+    position: absolute; top: 5px; right: 5px;
+  }
+
+  /* ── 内容区 ── */
+  .content { padding: 28px; flex: 1; }
+
+  /* ── 统计卡片 ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 16px;
+  }
+  .stat-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+  }
+  .stat-icon.blue { background: #EEF1FE; }
+  .stat-icon.green { background: #DCFCE7; }
+  .stat-icon.amber { background: #FEF3C7; }
+  .stat-icon.cyan { background: #CFFAFE; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .stat-value { font-size: 26px; font-weight: 700; }
+  .stat-change { font-size: 11px; color: var(--success); margin-top: 2px; }
+
+  /* ── 两列布局 ── */
+  .two-col { display: grid; grid-template-columns: 1fr 360px; gap: 18px; margin-bottom: 24px; }
+
+  /* ── 通用卡片 ── */
+  .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+  .card-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title { font-size: 15px; font-weight: 700; }
+  .card-action { font-size: 12px; color: var(--primary); cursor: pointer; }
+
+  /* ── 雷达图占位 ── */
+  .radar-wrap { padding: 24px; display: flex; justify-content: center; align-items: center; }
+  .radar-placeholder {
+    width: 220px; height: 220px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radar-bg {
+    width: 100%; height: 100%; border-radius: 50%;
+    background: conic-gradient(
+      var(--primary-light) 0deg 60deg,
+      #DCFCE7 60deg 120deg,
+      #FEF3C7 120deg 180deg,
+      #CFFAFE 180deg 240deg,
+      #F3E8FF 240deg 300deg,
+      #FEE2E2 300deg 360deg
+    );
+    opacity: .35;
+  }
+  .radar-poly {
+    position: absolute; width: 70%; height: 70%;
+    background: var(--primary); clip-path: polygon(50% 0%,85% 25%,85% 75%,50% 100%,15% 75%,15% 25%);
+    opacity: .25;
+  }
+  .radar-poly-2 {
+    position: absolute; width: 50%; height: 50%;
+    background: var(--primary); clip-path: polygon(50% 5%,90% 30%,80% 80%,50% 95%,20% 80%,10% 30%);
+    opacity: .4;
+  }
+  .radar-labels { position: absolute; width: 100%; height: 100%; }
+  .radar-label {
+    position: absolute; font-size: 10px; color: var(--muted); font-weight: 600;
+    white-space: nowrap;
+  }
+  .radar-label.top    { top:  2px; left: 50%; transform: translateX(-50%); }
+  .radar-label.tr     { top: 20%; right: -5px; }
+  .radar-label.br     { bottom: 20%; right: -5px; }
+  .radar-label.bot    { bottom: 2px; left: 50%; transform: translateX(-50%); }
+  .radar-label.bl     { bottom: 20%; left: -10px; }
+  .radar-label.tl     { top: 20%; left: -10px; }
+  .radar-center { position: absolute; font-size: 11px; color: var(--primary); font-weight: 700; }
+
+  /* ── 指标列表 ── */
+  .indicator-list { padding: 0 20px 12px; }
+  .indicator-row {
+    display: flex; align-items: center; padding: 10px 0;
+    border-bottom: 1px solid var(--bg); gap: 10px;
+  }
+  .indicator-row:last-child { border-bottom: none; }
+  .ind-name { flex: 1; font-size: 13px; }
+  .ind-bar-wrap { width: 100px; background: var(--bg); height: 6px; border-radius: 3px; }
+  .ind-bar { height: 6px; border-radius: 3px; }
+  .ind-score { font-size: 12px; font-weight: 700; width: 36px; text-align: right; }
+  .level-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 9px; font-weight: 600;
+  }
+  .level-H { background: #DCFCE7; color: #16A34A; }
+  .level-M { background: #FEF3C7; color: #D97706; }
+  .level-L { background: #FEE2E2; color: #DC2626; }
+
+  /* ── 学生列表 ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); padding: 10px 16px; text-align: left;
+    border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 9px; font-size: 11px; font-weight: 600;
+  }
+  .badge-blue { background: var(--primary-light); color: var(--primary); }
+  .badge-green { background: #DCFCE7; color: #16A34A; }
+  .badge-amber { background: #FEF3C7; color: #D97706; }
+  .badge-red { background: #FEE2E2; color: #DC2626; }
+  .action-link { color: var(--primary); cursor: pointer; font-size: 12px; }
+
+  /* ── 最近报告 ── */
+  .report-list { padding: 0 20px 8px; }
+  .report-item {
+    display: flex; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid var(--bg);
+  }
+  .report-item:last-child { border-bottom: none; }
+  .report-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .report-info .rname { font-size: 13px; font-weight: 600; }
+  .report-info .rmeta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .report-status { margin-left: auto; flex-shrink: 0; }
+
+  /* ── 流程步骤 ── */
+  .steps-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-bottom: 24px; }
+  .step-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 20px; display: flex; flex-direction: column; align-items: center;
+    text-align: center; position: relative;
+  }
+  .step-card:not(:first-child)::before {
+    content: '→'; position: absolute; left: -12px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; color: var(--muted); z-index: 1;
+  }
+  .step-card:first-child { border-radius: 12px 0 0 12px; }
+  .step-card:last-child  { border-radius: 0 12px 12px 0; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--primary);
+    color: #fff; font-weight: 700; font-size: 14px; display: flex;
+    align-items: center; justify-content: center; margin-bottom: 10px;
+  }
+  .step-num.done { background: var(--success); }
+  .step-num.pending { background: var(--border); color: var(--muted); }
+  .step-label { font-size: 13px; font-weight: 600; }
+  .step-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .step-btn {
+    margin-top: 12px; padding: 5px 14px; border-radius: 8px; border: none;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-muted { background: var(--border); color: var(--muted); }
+
+  /* ── 底部注解 ── */
+  .annotation {
+    background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px;
+    padding: 14px 18px; margin-top: 24px; font-size: 12px; color: #92400E;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+
+  /* ── 页面标题带徽章 ── */
+  .page-header { margin-bottom: 22px; }
+  .page-header h1 { font-size: 22px; font-weight: 700; }
+  .page-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Search bar ── */
+  .searchbar {
+    display: flex; gap: 10px; margin-bottom: 16px;
+  }
+  .searchbar input {
+    flex: 1; border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 12px; font-size: 13px;
+  }
+  .searchbar select {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 10px; font-size: 13px; background: var(--card);
+  }
+
+  /* ── 报告详情面板 ── */
+  .report-panel {
+    background: var(--card); border-radius: 12px; border: 1px solid var(--border);
+    padding: 22px;
+  }
+  .report-section-title {
+    font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .report-block {
+    background: var(--bg); border-radius: 8px; padding: 12px 14px;
+    font-size: 13px; line-height: 1.7; margin-bottom: 10px; color: #374151;
+  }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 3px 10px; font-size: 11px; color: var(--muted);
+    background: var(--card);
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ════════════════════════════════════
+       侧边栏
+  ═════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🧠</div>
+      <div>
+        <div class="logo-text">MindWise</div>
+        <div class="logo-sub">心理测评管理系统</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">总览</div>
+      <div class="nav-item active">
+        <span class="nav-icon">📊</span> 仪表盘
+      </div>
+
+      <div class="nav-section">学生管理</div>
+      <div class="nav-item">
+        <span class="nav-icon">👤</span> 学生列表
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🏫</span> 班级管理
+      </div>
+
+      <div class="nav-section">测评</div>
+      <div class="nav-item">
+        <span class="nav-icon">📝</span> 问卷 / 考试
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚡</span> 提交答案
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🔢</span> 计算分数
+        <span class="nav-badge">待执行</span>
+      </div>
+
+      <div class="nav-section">分析</div>
+      <div class="nav-item">
+        <span class="nav-icon">📈</span> 指标评分
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📄</span> 报告生成
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🏷️</span> 心理指标库
+      </div>
+
+      <div class="nav-section">系统 (管理员)</div>
+      <div class="nav-item">
+        <span class="nav-icon">👩‍🏫</span> 教师管理
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚙️</span> 系统设置
+      </div>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="avatar">王</div>
+      <div class="user-info">
+        <div class="name">王老师</div>
+        <div class="role">admin_teacher</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════════
+       主内容
+  ═════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- 顶部栏 -->
+    <header class="topbar">
+      <div class="topbar-title">仪表盘总览</div>
+      <div class="topbar-right">
+        <select class="exam-select">
+          <option>📋 2024 春季心理测评</option>
+          <option>📋 2023 秋季心理测评</option>
+        </select>
+        <div class="icon-btn">🔔<span class="notif-dot"></span></div>
+        <div class="icon-btn">❓</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- 页面标题 -->
+      <div class="page-header">
+        <h1>2024 春季心理测评</h1>
+        <p>共 3 个班级 · 142 名学生 · 测评完成率 87%&nbsp;
+          <span class="chip">📅 2024-03-15</span>
+        </p>
+      </div>
+
+      <!-- 评测工作流步骤 -->
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num done">✓</div>
+          <div class="step-label">创建考试</div>
+          <div class="step-sub">问卷配置完成</div>
+          <button class="step-btn btn-success">已完成</button>
+        </div>
+        <div class="step-card">
+          <div class="step-num done">✓</div>
+          <div class="step-label">提交答案</div>
+          <div class="step-sub">124 / 142 已作答</div>
+          <button class="step-btn btn-primary">查看详情</button>
+        </div>
+        <div class="step-card">
+          <div class="step-num" style="background:var(--warning);color:#fff">!</div>
+          <div class="step-label">计算分数</div>
+          <div class="step-sub">Z-score 标准化</div>
+          <button class="step-btn btn-primary">立即计算</button>
+        </div>
+        <div class="step-card">
+          <div class="step-num pending">4</div>
+          <div class="step-label">生成报告</div>
+          <div class="step-sub">AI 个性化分析</div>
+          <button class="step-btn btn-muted">未开始</button>
+        </div>
+      </div>
+
+      <!-- 统计卡片 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div>
+            <div class="stat-label">参测学生</div>
+            <div class="stat-value">142</div>
+            <div class="stat-change">↑ 12 较上次</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div>
+            <div class="stat-label">已完成作答</div>
+            <div class="stat-value">124</div>
+            <div class="stat-change">完成率 87.3%</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">⚠️</div>
+          <div>
+            <div class="stat-label">需关注学生</div>
+            <div class="stat-value">18</div>
+            <div class="stat-change" style="color:var(--warning)">低分指标 ≥2</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon cyan">📄</div>
+          <div>
+            <div class="stat-label">已生成报告</div>
+            <div class="stat-value">97</div>
+            <div class="stat-change">待生成 27 份</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中间两列 -->
+      <div class="two-col">
+
+        <!-- 学生评分列表 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">学生心理指标总览</div>
+            <span class="card-action">查看全部 →</span>
+          </div>
+          <div class="searchbar" style="padding:12px 16px 0;">
+            <input type="text" placeholder="🔍 搜索学生姓名…">
+            <select><option>全部班级</option><option>高一(1)班</option><option>高一(2)班</option></select>
+            <select><option>全部状态</option><option>高风险</option><option>已报告</option></select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>学生</th>
+                  <th>班级</th>
+                  <th>综合评级</th>
+                  <th>最低指标</th>
+                  <th>报告状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>李明</b></td>
+                  <td>高一(1)班</td>
+                  <td><span class="badge badge-amber">中等</span></td>
+                  <td>情绪调节 <span class="level-tag level-L">L</span></td>
+                  <td><span class="badge badge-green">已生成</span></td>
+                  <td><span class="action-link">查看报告</span></td>
+                </tr>
+                <tr>
+                  <td><b>张晓雯</b></td>
+                  <td>高一(2)班</td>
+                  <td><span class="badge badge-green">良好</span></td>
+                  <td>—</td>
+                  <td><span class="badge badge-green">已生成</span></td>
+                  <td><span class="action-link">查看报告</span></td>
+                </tr>
+                <tr>
+                  <td><b>陈浩然</b></td>
+                  <td>高一(1)班</td>
+                  <td><span class="badge badge-red">需关注</span></td>
+                  <td>自我认知 <span class="level-tag level-L">L</span></td>
+                  <td><span class="badge badge-amber">待生成</span></td>
+                  <td><span class="action-link">生成报告</span></td>
+                </tr>
+                <tr>
+                  <td><b>刘佳慧</b></td>
+                  <td>高一(3)班</td>
+                  <td><span class="badge badge-blue">优秀</span></td>
+                  <td>—</td>
+                  <td><span class="badge badge-green">已生成</span></td>
+                  <td><span class="action-link">查看报告</span></td>
+                </tr>
+                <tr>
+                  <td><b>王博文</b></td>
+                  <td>高一(2)班</td>
+                  <td><span class="badge badge-red">需关注</span></td>
+                  <td>执行功能 <span class="level-tag level-L">L</span></td>
+                  <td><span class="badge badge-amber">待生成</span></td>
+                  <td><span class="action-link">生成报告</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 右侧面板 -->
+        <div style="display:flex;flex-direction:column;gap:18px;">
+
+          <!-- 单生雷达图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">李明 — 指标雷达图</div>
+              <span class="card-action">切换学生</span>
+            </div>
+            <div class="radar-wrap">
+              <div class="radar-placeholder">
+                <div class="radar-bg"></div>
+                <div class="radar-poly"></div>
+                <div class="radar-poly-2"></div>
+                <div class="radar-center">综合</div>
+                <div class="radar-labels">
+                  <span class="radar-label top">动机</span>
+                  <span class="radar-label tr">认知</span>
+                  <span class="radar-label br">调节</span>
+                  <span class="radar-label bot">执行</span>
+                  <span class="radar-label bl">情绪</span>
+                  <span class="radar-label tl">自我</span>
+                </div>
+              </div>
+            </div>
+            <div class="indicator-list">
+              <div class="indicator-row">
+                <span class="ind-name">情绪稳定性</span>
+                <div class="ind-bar-wrap"><div class="ind-bar" style="width:75%;background:var(--success)"></div></div>
+                <span class="ind-score" style="color:var(--success)">0.72</span>
+                <span class="level-tag level-H">H</span>
+              </div>
+              <div class="indicator-row">
+                <span class="ind-name">自我认知</span>
+                <div class="ind-bar-wrap"><div class="ind-bar" style="width:50%;background:var(--warning)"></div></div>
+                <span class="ind-score" style="color:var(--warning)">0.15</span>
+                <span class="level-tag level-M">M</span>
+              </div>
+              <div class="indicator-row">
+                <span class="ind-name">情绪调节</span>
+                <div class="ind-bar-wrap"><div class="ind-bar" style="width:20%;background:var(--danger)"></div></div>
+                <span class="ind-score" style="color:var(--danger)">-0.68</span>
+                <span class="level-tag level-L">L</span>
+              </div>
+              <div class="indicator-row">
+                <span class="ind-name">执行功能</span>
+                <div class="ind-bar-wrap"><div class="ind-bar" style="width:60%;background:var(--primary)"></div></div>
+                <span class="ind-score" style="color:var(--primary)">0.43</span>
+                <span class="level-tag level-M">M</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 最近报告 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">最近生成报告</div>
+              <span class="card-action">全部 →</span>
+            </div>
+            <div class="report-list">
+              <div class="report-item">
+                <div class="report-avatar" style="background:#4F6EF7">李</div>
+                <div class="report-info">
+                  <div class="rname">李明</div>
+                  <div class="rmeta">高一(1)班 · 2 分钟前</div>
+                </div>
+                <div class="report-status"><span class="badge badge-green">已保存</span></div>
+              </div>
+              <div class="report-item">
+                <div class="report-avatar" style="background:#22C55E">张</div>
+                <div class="report-info">
+                  <div class="rname">张晓雯</div>
+                  <div class="rmeta">高一(2)班 · 1 小时前</div>
+                </div>
+                <div class="report-status"><span class="badge badge-green">已保存</span></div>
+              </div>
+              <div class="report-item">
+                <div class="report-avatar" style="background:#F59E0B">刘</div>
+                <div class="report-info">
+                  <div class="rname">刘佳慧</div>
+                  <div class="rmeta">高一(3)班 · 3 小时前</div>
+                </div>
+                <div class="report-status"><span class="badge badge-green">已保存</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 单生报告详情预览 -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header">
+          <div class="card-title">📄 报告预览 — 陈浩然（AI 生成样本）</div>
+          <div style="display:flex;gap:8px;">
+            <span class="chip">v2</span>
+            <span class="card-action">保存报告</span>
+          </div>
+        </div>
+        <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div>
+            <div class="report-section-title">✅ 优势指标（Top 3）</div>
+            <div class="report-block">
+              <b>情绪稳定性（H · 0.82）</b><br>
+              陈同学在情绪稳定性方面表现突出，能较好地管控日常压力，在集体活动中展现出积极稳定的状态。
+            </div>
+            <div class="report-block">
+              <b>动机系统（H · 0.65）</b><br>
+              具有较强的内在学习动力，自主完成学习任务的能力强，对目标持续投入。
+            </div>
+
+            <div class="report-section-title" style="margin-top:16px;">⚠️ 需改善指标（Bottom 3）</div>
+            <div class="report-block">
+              <b>自我认知（L · -0.74）</b><br>
+              对自身优劣势认识不足，建议通过反思日记或与老师的一对一沟通加以改善。
+            </div>
+          </div>
+          <div>
+            <div class="report-section-title">💡 提升建议</div>
+            <div class="report-block">
+              1. <b>自我认知</b>：每周撰写学习反思日志，记录成功与挫折，帮助建立准确自我形象。
+            </div>
+            <div class="report-block">
+              2. <b>情绪调节</b>：尝试正念呼吸练习（每日 5 分钟），配合学校心理辅导室提供的 CBT 工具。
+            </div>
+            <div class="report-block">
+              3. <b>执行功能</b>：采用番茄工作法拆解大型任务，制定每日三件事计划，减少拖延行为。
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px;">
+              <button class="step-btn btn-primary">保存报告</button>
+              <button class="step-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text)">重新生成</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 注解 -->
+      <div class="annotation">
+        ⚠️ <div>
+          <b>草图说明：</b>本页面为 MindWise 前端 UI 线框图，展示登录后主界面各核心模块。
+          实际开发时使用 React / Vue + Tailwind CSS 实现。评分等级划分：
+          <b>H（高）</b> Z-score ≥ 0.5 &nbsp;|&nbsp;
+          <b>M（中）</b> -0.5 ~ 0.5 &nbsp;|&nbsp;
+          <b>L（低）</b> ≤ -0.5。
+          左侧侧边栏菜单项按角色动态显隐（class_teacher 仅见本班数据）。
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+</body>
+</html>
