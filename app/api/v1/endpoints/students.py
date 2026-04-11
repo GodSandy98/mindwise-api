@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.student import Student
@@ -35,6 +35,7 @@ def _validate_and_dedup_student_ids(student_ids: list[int]) -> list[int]:
 
 @router.get("/students", response_model=list[StudentResponse])
 def get_all_students(
+    include_graduated: bool = Query(False),
     db: Session = Depends(get_db),
     current: Teacher = Depends(get_current_teacher),
 ):
@@ -42,6 +43,8 @@ def get_all_students(
     cid = class_filter(current)
     if cid is not None:
         query = query.filter(Student.class_id == cid)
+    elif not include_graduated:
+        query = query.filter(Class.is_active == True)
     result = []
     for student, class_name in query.all():
         result.append(StudentResponse(id=student.id, name=student.name, class_id=student.class_id, class_name=class_name))

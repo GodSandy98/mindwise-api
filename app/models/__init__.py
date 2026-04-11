@@ -10,3 +10,6 @@ from .score_student import ScoreStudent
 from .report import Report
 from .report_indicator import ReportIndicator
 from .teacher import Teacher
+from .persona_template import PersonaTemplate
+from .indicator_text import IndicatorText
+from .batch_job import BatchJob

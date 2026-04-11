@@ -11,6 +11,27 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+@app.on_event("startup")
+def _reset_stuck_jobs():
+    """Mark any pending/running batch jobs as failed on startup.
+    These jobs were killed when the server last shut down."""
+    import json
+    from app.db.session import SessionLocal
+    from app.models.batch_job import BatchJob
+    db = SessionLocal()
+    try:
+        stuck = db.query(BatchJob).filter(BatchJob.status.in_(["pending", "running"])).all()
+        for job in stuck:
+            job.status = "failed"
+            existing_errors = json.loads(job.errors) if job.errors else []
+            existing_errors.insert(0, {"error": "服务重启，任务中断，请重新生成"})
+            job.errors = json.dumps(existing_errors, ensure_ascii=False)
+        if stuck:
+            db.commit()
+    finally:
+        db.close()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:5174"],
