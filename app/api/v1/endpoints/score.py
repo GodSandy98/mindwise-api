@@ -45,7 +45,7 @@ def get_exam_scores(exam_id: int, db: Session = Depends(get_db), current: Teache
         query = query.filter(ScoreStudent.student_id.in_(student_ids))
     rows = query.all()
     if not rows:
-        raise HTTPException(status_code=404, detail=f"未找到得分，请先调用 /scores/compute")
+        return ScoreComputeResponse(results=[])
     by_student: Dict[int, List[dict]] = {}
     for r in rows:
         by_student.setdefault(r.student_id, []).append({"indicator_id": r.indicator_id, "score_raw": r.score_raw, "score_standardized": r.score_standardized})
