@@ -13,6 +13,28 @@ app = FastAPI(
 
 
 @app.on_event("startup")
+def _migrate_columns():
+    """Add new columns to existing tables if they don't exist yet."""
+    import sqlalchemy as _sa
+    with engine.connect() as conn:
+        # batch_jobs.student_ids
+        batch_cols = [r[1] for r in conn.execute(_sa.text("PRAGMA table_info(batch_jobs)"))]
+        if "student_ids" not in batch_cols:
+            conn.execute(_sa.text("ALTER TABLE batch_jobs ADD COLUMN student_ids TEXT"))
+        # exams.scores_computed_at
+        exam_cols = [r[1] for r in conn.execute(_sa.text("PRAGMA table_info(exams)"))]
+        if "scores_computed_at" not in exam_cols:
+            conn.execute(_sa.text("ALTER TABLE exams ADD COLUMN scores_computed_at DATETIME"))
+        # reports.created_at / updated_at
+        report_cols = [r[1] for r in conn.execute(_sa.text("PRAGMA table_info(reports)"))]
+        if "created_at" not in report_cols:
+            conn.execute(_sa.text("ALTER TABLE reports ADD COLUMN created_at DATETIME"))
+        if "updated_at" not in report_cols:
+            conn.execute(_sa.text("ALTER TABLE reports ADD COLUMN updated_at DATETIME"))
+        conn.commit()
+
+
+@app.on_event("startup")
 def _reset_stuck_jobs():
     """Mark any pending/running batch jobs as failed on startup.
     These jobs were killed when the server last shut down."""

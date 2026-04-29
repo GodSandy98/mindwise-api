@@ -31,6 +31,7 @@ from app.models.student import Student
 from app.models.class_ import Class
 from app.models.teacher import Teacher
 from app.models.batch_job import BatchJob
+from app.models.exam import Exam
 from app.schemas.report import (
     ReportGenerateRequest,
     ReportGenerateResponse,
@@ -719,33 +720,48 @@ def get_student_report_status(
     db: Session = Depends(get_db),
     current: Teacher = Depends(require_psych_or_above),
 ):
-    """Return all students with a flag indicating whether they have a saved report for this exam."""
+    """Return all students with flags: has_report and data_changed.
+
+    data_changed=True means scores were (re)computed after the report was generated,
+    so the report may be stale and regeneration makes sense.
+    data_changed=False means the underlying data is the same as when the report was built.
+    """
     query = db.query(Student, Class).join(Class, Student.class_id == Class.id)
     if class_id:
         query = query.filter(Student.class_id == class_id)
-
     rows = query.order_by(Class.name, Student.name).all()
 
-    # Fetch all report student_ids for this exam in one query
-    existing = {
-        r.student_id
-        for r in db.query(Report.student_id)
+    # When scores were last computed for this exam
+    exam = db.query(Exam).filter(Exam.id == exam_id).first()
+    scores_computed_at = exam.scores_computed_at if exam else None
+
+    # Fetch report creation times per student for this exam
+    report_rows = (
+        db.query(Report.student_id, Report.created_at)
         .filter(Report.release == exam_id)
         .all()
-    }
+    )
+    report_map: dict[int, object] = {r.student_id: r.created_at for r in report_rows}
 
     result = []
     for student, cls in rows:
-        # Access control: class_teacher can only see their own class
         if current.role == "class_teacher" and current.class_id != student.class_id:
             continue
-        result.append(StudentReportStatus(
-            student_id=student.id,
-            student_name=student.name,
-            class_id=student.class_id,
-            class_name=cls.name,
-            has_report=student.id in existing,
-        ))
+        has_report = student.id in report_map
+        if not has_report:
+            data_changed = True   # no report → generation is always meaningful
+        elif scores_computed_at and report_map[student.id]:
+            data_changed = scores_computed_at > report_map[student.id]
+        else:
+            data_changed = False  # can't determine → assume data unchanged
+        result.append({
+            "student_id": student.id,
+            "student_name": student.name,
+            "class_id": student.class_id,
+            "class_name": cls.name,
+            "has_report": has_report,
+            "data_changed": data_changed,
+        })
     return result
 
 
@@ -765,11 +781,13 @@ def batch_generate_reports(
     if not students:
         raise HTTPException(status_code=404, detail="未找到学生")
 
+    student_id_list = [s.id for s in students]
     job = BatchJob(
         exam_id=payload.exam_id,
         class_id=payload.class_id,
         status="pending",
         total=len(students),
+        student_ids=json.dumps(student_id_list),
     )
     db.add(job)
     db.commit()
@@ -831,6 +849,51 @@ def list_batch_jobs(
         }
         for j in jobs
     ]
+
+
+@router.get("/batch-jobs-all")
+def list_all_batch_jobs(
+    db: Session = Depends(get_db),
+    current: Teacher = Depends(require_psych_or_above),
+):
+    """List all batch jobs across all exams (newest first, max 100)."""
+    rows = (
+        db.query(BatchJob, Exam.name.label("exam_name"))
+        .join(Exam, BatchJob.exam_id == Exam.id)
+        .order_by(BatchJob.created_at.desc())
+        .limit(100)
+        .all()
+    )
+
+    # Bulk-fetch all student names needed across all jobs
+    all_student_ids: set[int] = set()
+    for j, _ in rows:
+        if j.student_ids:
+            all_student_ids.update(json.loads(j.student_ids))
+    student_name_map: dict[int, str] = {}
+    if all_student_ids:
+        for s in db.query(Student).filter(Student.id.in_(all_student_ids)).all():
+            student_name_map[s.id] = s.name
+
+    result = []
+    for j, exam_name in rows:
+        ids: list[int] = json.loads(j.student_ids) if j.student_ids else []
+        students = [{"student_id": sid, "student_name": student_name_map.get(sid, f"学生{sid}")} for sid in ids]
+        result.append({
+            "job_id": j.id,
+            "exam_id": j.exam_id,
+            "exam_name": exam_name,
+            "status": j.status,
+            "total": j.total,
+            "success": j.success,
+            "failed": j.failed,
+            "errors": json.loads(j.errors) if j.errors else [],
+            "student_ids": ids,
+            "students": students,
+            "created_at": j.created_at.isoformat() if j.created_at else None,
+            "updated_at": j.updated_at.isoformat() if j.updated_at else None,
+        })
+    return result
 
 
 # ── DOCX Export ───────────────────────────────────────────────
