@@ -17,6 +17,9 @@ class BatchJob(Base):
     success = Column(Integer, nullable=False, default=0)
     failed = Column(Integer, nullable=False, default=0)
 
+    # JSON-encoded list of student IDs that were included in this job
+    student_ids = Column(Text, nullable=True)
+
     # JSON-encoded list of error dicts [{student_id, student_name, error}]
     errors = Column(Text, nullable=True)
 

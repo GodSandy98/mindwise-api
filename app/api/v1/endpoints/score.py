@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.api.v1.deps import get_current_teacher, class_filter, assert_student_class_access, require_admin_or_above
 from app.db.session import get_db
 from app.db.sql_loader import load_text_query
+from app.models.exam import Exam
 from app.models.student import Student
 from app.models.score_student import ScoreStudent
 from app.models.teacher import Teacher
@@ -55,11 +56,16 @@ def get_exam_scores(exam_id: int, db: Session = Depends(get_db), current: Teache
 @router.post("/compute", response_model=ScoreComputeResponse)
 def compute_score_api(payload: ScoreComputeRequest, db: Session = Depends(get_db), _: Teacher = Depends(require_admin_or_above)) -> ScoreComputeResponse:
     try:
+        from datetime import datetime
         raw_scores = _compute_score_raw_avg(db, payload.exam_id)
         stats_by_indicator = _compute_indicator_stats_for_release(db, payload.exam_id)
         scores = _apply_standardization(raw_scores, stats_by_indicator)
         with db.begin_nested():
             _upsert_scores(db, payload.exam_id, scores)
+            # Stamp exam with the time scores were last computed
+            exam = db.query(Exam).filter(Exam.id == payload.exam_id).first()
+            if exam:
+                exam.scores_computed_at = datetime.utcnow()
             return _build_response(payload.exam_id, scores)
     except HTTPException:
         raise
